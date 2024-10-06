@@ -46,3 +46,4 @@ namespace Project.Shared.Entities
         //public ICollection<Evaluation> Evaluations { get; set; }
 
     }
+}
