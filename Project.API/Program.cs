@@ -17,18 +17,18 @@ builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer("name=DefaultConn
 var app = builder.Build();
 
 
-//SeedData(app);
+SeedData(app);
 
-//void SeedData(WebApplication app)
-//{
-//    IServiceScopeFactory? scopedFactory = app.Services.GetService<IServiceScopeFactory>();
+void SeedData(WebApplication app)
+{
+    IServiceScopeFactory? scopedFactory = app.Services.GetService<IServiceScopeFactory>();
 
-//    using (IServiceScope? scope = scopedFactory!.CreateScope())
-//    {
-//        SeedDb? service = scope.ServiceProvider.GetService<SeedDb>();
-//        //service!.SeedAsync().Wait();
-//    }
-//}
+    using (IServiceScope? scope = scopedFactory!.CreateScope())
+    {
+        SeedDb? service = scope.ServiceProvider.GetService<SeedDb>();
+        //service!.SeedAsync().Wait();
+    }
+}
 
 
 
