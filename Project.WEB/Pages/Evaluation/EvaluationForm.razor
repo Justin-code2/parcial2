@@ -1,0 +1,82 @@
+﻿@using Project.Shared.Entities 
+
+@inject SweetAlertService swal
+
+<EditForm Model="Evaluation" OnSubmit="OnSubmit">
+    
+
+
+    <DataAnnotationsValidator /> 
+
+
+
+
+    <div class="mb-3"> 
+
+
+        <label>Puntaje:</label
+        <div> 
+
+            <InputText width="10"  @bind-Value="Evaluation.Score" /> 
+
+            <ValidationMessage For="@(()=>Evaluation.Score)"/> 
+
+        </div
+    </div> 
+
+ 
+
+    <div class="mb-3"> 
+
+        <label>Nombre:</label> 
+
+        <div> 
+
+            <InputText width="10" @bind-Value="Evaluation.CommentMent" /> 
+
+            <ValidationMessage For="@(()=>Evaluation.CommentMent)" /> 
+
+        </div> 
+    </div> 
+
+ 
+
+   
+
+ 
+
+    <button class="btn btn-primary" type="submit">Guardar</button> 
+
+    <button class="btn btn-success" onclick="ReturnAction">Regresar</button> 
+
+ 
+
+          
+
+ 
+
+</EditForm>  
+
+@code { 
+
+ 
+
+    [EditorRequired] 
+
+    [Parameter] 
+    public Evaluation Evaluation { get; set; } 
+
+
+    [EditorRequired] 
+
+    [Parameter] 
+    public EventCallback OnSubmit { get; set; } 
+
+ 
+
+    [EditorRequired] 
+
+    [Parameter] 
+    public EventCallback ReturnAction { get; set; } 
+
+} 

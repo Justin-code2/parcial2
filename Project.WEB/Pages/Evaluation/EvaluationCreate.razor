@@ -1,0 +1,75 @@
+﻿@page "/Evaluations/create" 
+
+ 
+
+@inject IRepository repository 
+
+ 
+
+@inject NavigationManager navigationManager  
+
+ 
+
+@inject SweetAlertService sweetAlertService 
+
+<h3>Evaluation  Create</h3> 
+
+ 
+
+<EvaluationForm @ref="evaluationForm"  Evaluation="evaluation" OnSubmit="Create" ReturnAction="Return" /> 
+
+ 
+
+ 
+
+ 
+
+@code { 
+
+    private Evaluation evaluation = new(); 
+
+    private EvaluationForm evaluationForm; 
+
+ 
+
+ 
+
+ 
+
+    private async Task Create() 
+
+    { 
+
+ 
+
+        var responseHttp = await repository.Post("/api/Evaluations", evaluation); 
+
+        if (responseHttp.Error) 
+
+        { 
+
+            var message = await responseHttp.GetErrorMessage(); 
+
+            await sweetAlertService.FireAsync("Error", message); 
+
+            return; 
+
+        } 
+
+ 
+
+        navigationManager.NavigateTo("/Evaluations"); 
+
+    } 
+
+ 
+
+    private void Return() 
+
+    { 
+
+        navigationManager.NavigateTo("/Evaluations"); 
+
+    } 
+
+} 
