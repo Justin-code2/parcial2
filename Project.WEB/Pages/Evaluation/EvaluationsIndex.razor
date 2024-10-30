@@ -1,0 +1,138 @@
+﻿
+
+@page "/Evaluations" 
+
+@using Project.Shared.Entities 
+
+@using Project.WEB.Repositories 
+
+@using Project.WEB.Shared 
+
+ 
+
+ 
+
+@inject IRepository repository  
+
+ 
+
+<h1>EvaluationsIndex</h1> 
+
+ 
+
+
+
+ 
+
+<GenericList MyList="Evaluations"> 
+
+ 
+
+    <Body> 
+
+
+        <div class="mb-3">
+
+
+
+
+
+            <a class="btn btn-primary " href="/Evaluations/Create">New Evaluation</a>
+
+
+
+        </div>
+
+
+        <table class="table table-striped"> 
+
+            <thead> 
+
+                <tr> 
+
+                    <th>Evaluation</th> 
+
+                    
+
+ 
+
+                </tr> 
+
+            </thead> 
+
+            <tbody> 
+
+                @foreach (var evaluation in Evaluations!) 
+
+                { 
+
+                    <tr> 
+
+                         
+
+                        <td> 
+
+                            @evaluation.Score
+
+                        </td> 
+
+                        <td>
+
+                            @evaluation.CommentMent
+
+                        </td>
+ 
+ 
+                        <td> 
+
+                            <a class="btn btn-warning">Editar</a> 
+
+                            <button class="btn btn-danger">Borrar</button> 
+
+                        </td> 
+
+ 
+
+                    </tr> 
+
+                } 
+
+            </tbody> 
+
+        </table> 
+
+ 
+
+    </Body> 
+
+  
+
+</GenericList> 
+
+
+@code { 
+
+
+    public List<Evaluation> Evaluations { get; set; } 
+
+ 
+
+    protected async override Task OnInitializedAsync() 
+
+    { 
+
+        var responseHppt = await repository.Get<List<Evaluation>>("/api/evaluations"); 
+
+        Evaluations = responseHppt.Response!; 
+
+ 
+
+ 
+
+ 
+
+ 
+
+} 
+
+} 
