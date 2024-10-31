@@ -1,0 +1,88 @@
+﻿@page "/Plans"
+
+@using Project.Shared.Entities
+
+@using Project.WEB.Repositories
+
+@using Project.WEB.Shared
+
+@inject IRepository repository
+
+<h1>Planes</h1>
+
+<GenericList MyList="Plans">
+
+    <Body>
+
+        <div class="mb-3">
+            <a class="btn btn-primary " href="/Plans/Create">Nuevo Plan</a>
+        </div>
+
+        <table class="table table-striped">
+
+            <thead>
+
+                <tr>
+
+                    <th>Plan</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (var plan in Plans!)
+
+                {
+
+                    <tr>
+
+                        <td>
+                            @plan.NamePro
+                        </td>
+
+                        <td>
+                            @plan.DescripPro
+                        </td>
+
+                        <td>
+                            @plan.StatePro
+                        </td>
+
+                        <td>
+                            @plan.DateEnd
+                        </td>
+
+                        <td>
+                            <a class="btn btn-warning">Editar</a>
+                            <button class="btn btn-danger">Borrar</button>
+                        </td>
+
+                    </tr>
+
+                }
+
+            </tbody>
+
+        </table>
+
+    </Body>
+
+</GenericList>
+
+@code {
+
+    public List<Plan> Plans { get; set; }
+
+    protected async override Task OnInitializedAsync()
+
+    {
+
+        var responseHttp = await repository.Get<List<Plan>>("/api/plans");
+
+        Plans = responseHttp.Response!;
+
+    }
+
+}

@@ -1,0 +1,57 @@
+﻿@using Project.Shared.Entities
+
+@inject SweetAlertService swal
+
+<EditForm Model="Plan" OnSubmit="OnSubmit">
+
+    <DataAnnotationsValidator />
+
+    <div class="mb-3">
+        <label>Nombre proyecto:</label>
+        <div>
+            <InputText width="10" @bind-Value="Plan.NamePro" />
+            <ValidationMessage For="@(() => Plan.NamePro)" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label>Nombre:</label>
+        <div>
+            <InputText width="10" @bind-Value="Plan.DescripPro" />
+            <ValidationMessage For="@(() => Plan.DescripPro)" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label>Nombre:</label>
+        <div>
+            <InputText width="10" @bind-Value="Plan.StatePro" />
+            <ValidationMessage For="@(() => Plan.StatePro)" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label>Nombre:</label>
+        <div>
+            <InputText width="10" @bind-Value="Plan.DateEnd" />
+            <ValidationMessage For="@(() => Plan.DateEnd)" />
+        </div>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Guardar</button>
+    <button class="btn btn-success" @onclick="ReturnAction">Regresar</button>
+</EditForm>
+
+@code {
+    [EditorRequired]
+    [Parameter]
+    public Plan Plan { get; set; }
+
+    [EditorRequired]
+    [Parameter]
+    public EventCallback OnSubmit { get; set; }
+
+    [EditorRequired]
+    [Parameter]
+    public EventCallback ReturnAction { get; set; }
+}
