@@ -1,0 +1,35 @@
+﻿@page "/Participants/create"
+
+@inject IRepository repository
+
+@inject NavigationManager navigationManager
+
+@inject SweetAlertService sweetAlertService
+
+<h3>Crear Participante</h3>
+
+<ParticipantForm @ref="participantForm" Participant="participant" OnSubmit="Create" ReturnAction="Return" />
+
+@code {
+    private Participant participant = new();
+    private ParticipantForm participantForm;
+
+    private async Task Create()
+    {
+        var responseHttp = await repository.Post("/api/participants", participant);
+
+        if (responseHttp.Error)
+        {
+            var message = await responseHttp.GetErrorMessage();
+            await sweetAlertService.FireAsync("Error", message);
+            return;
+        }
+
+        navigationManager.NavigateTo("/Participants");
+    }
+
+    private void Return()
+    {
+        navigationManager.NavigateTo("/Participants");
+    }
+}

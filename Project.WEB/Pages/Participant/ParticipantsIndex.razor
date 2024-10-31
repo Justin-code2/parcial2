@@ -1,0 +1,84 @@
+﻿@page "/Participants"
+
+@using Project.Shared.Entities
+
+@using Project.WEB.Repositories
+
+@using Project.WEB.Shared
+
+@inject IRepository repository
+
+<h1>Participantes</h1>
+
+<GenericList MyList="Participants">
+
+    <Body>
+
+        <div class="mb-3">
+            <a class="btn btn-primary " href="/Participants/Create">Nuevo Participante</a>
+        </div>
+
+        <table class="table table-striped">
+
+            <thead>
+
+                <tr>
+
+                    <th>Participante</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (var participant in Participants!)
+
+                {
+
+                    <tr>
+
+                        <td>
+                            @participant.NameParti
+                        </td>
+
+                        <td>
+                            @participant.RoleParti
+                        </td>
+
+                        <td>
+                            @participant.ExperienceParti
+                        </td>
+
+                        <td>
+                            <a class="btn btn-warning">Editar</a>
+                            <button class="btn btn-danger">Borrar</button>
+                        </td>
+
+                    </tr>
+
+                }
+
+            </tbody>
+
+        </table>
+
+    </Body>
+
+</GenericList>
+
+@code {
+
+    public List<Participant> Participants { get; set; }
+
+    protected async override Task OnInitializedAsync()
+
+    {
+
+        var responseHttp = await repository.Get<List<Participant>>("/api/participants");
+
+        Participants = responseHttp.Response!;
+
+    }
+
+}
