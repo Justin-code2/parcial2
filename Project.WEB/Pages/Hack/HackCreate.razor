@@ -1,0 +1,37 @@
+﻿@page "/Hacks/create"
+
+@inject IRepository repository
+
+@inject NavigationManager navigationManager
+
+@inject SweetAlertService sweetAlertService
+
+<h3>Hack Create</h3>
+
+<HackForm @ref="hackForm" Hack="hack" OnSubmit="Create" ReturnAction="Return" />
+
+@code {
+
+    private Hack hack = new();
+
+    private HackForm hackForm;
+
+    private async Task Create()
+    {
+        var responseHttp = await repository.Post("/api/Hacks", hack);
+
+        if (responseHttp.Error)
+        {
+            var message = await responseHttp.GetErrorMessage();
+            await sweetAlertService.FireAsync("Error", message);
+            return;
+        }
+
+        navigationManager.NavigateTo("/Hacks");
+    }
+
+    private void Return()
+    {
+        navigationManager.NavigateTo("/Hacks");
+    }
+}

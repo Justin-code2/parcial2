@@ -1,0 +1,70 @@
+﻿@page "/Hacks"
+
+@using Project.Shared.Entities
+
+@using Project.WEB.Repositories
+
+@using Project.WEB.Shared
+
+@inject IRepository repository
+
+<h1>Hacks</h1>
+
+<GenericList MyList="Hacks">
+
+    <Body>
+
+        <div class="mb-3">
+            <a class="btn btn-primary " href="/Hacks/Create">New Hack</a>
+        </div>
+
+        <table class="table table-striped">
+
+            <thead>
+                <tr>
+                    <th>Hack</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var hack in Hacks!)
+                {
+                    <tr>
+                        <td>
+                            @hack.NameHack
+                        </td>
+                        <td>
+                            @hack.DateStart
+                        </td>
+                        <td>
+                            @hack.DateEnd
+                        </td>
+                        <td>
+                            @hack.Topic
+                        </td>
+                        <td>
+                            @hack.Organizer
+                        </td>
+                        <td>
+                            <a class="btn btn-warning">Editar</a>
+
+                            <button class="btn btn-danger">Borrar</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </Body>
+
+</GenericList>
+
+@code {
+    public List<Hack> Hacks { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        var responseHppt = await repository.Get<List<Hack>>("/api/hacks");
+        Hacks = responseHppt.Response!;
+    }
+}

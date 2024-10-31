@@ -1,0 +1,68 @@
+﻿@using Project.Shared.Entities
+
+@inject SweetAlertService swal
+
+<EditForm Model="Hack" OnSubmit="OnSubmit">
+
+    <DataAnnotationsValidator />
+
+    <div class="mb-3">
+        <label>Nombre:</label>
+        <div>
+            <InputText width="10" @bind-Value="Hack.NameHack" />
+            <ValidationMessage For="@(()=>Hack.NameHack)" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label>Fecha inicio:</label>
+        <div>
+            <InputText width="10" @bind-Value="Hack.DateStart" />
+            <ValidationMessage For="@(()=>Hack.DateStart)" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label>Fecha inicio:</label>
+        <div>
+            <InputText width="10" @bind-Value="Hack.DateEnd" />
+            <ValidationMessage For="@(()=>Hack.DateEnd)" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label>Tema:</label>
+        <div>
+            <InputText width="10" @bind-Value="Hack.Topic" />
+            <ValidationMessage For="@(()=>Hack.Topic)" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label>Organizador:</label>
+        <div>
+            <InputText width="10" @bind-Value="Hack.Organizer" />
+            <ValidationMessage For="@(()=>Hack.Organizer)" />
+        </div>
+    </div>
+
+
+
+    <button class="btn btn-primary" type="submit">Guardar</button>
+    <button class="btn btn-success" onclick="ReturnAction">Regresar</button>
+
+</EditForm>
+
+@code {
+    [EditorRequired]
+    [Parameter]
+    public Hack Hack { get; set; }
+
+    [EditorRequired]
+    [Parameter]
+    public EventCallback OnSubmit { get; set; }
+
+    [EditorRequired]
+    [Parameter]
+    public EventCallback ReturnAction { get; set; }
+}
