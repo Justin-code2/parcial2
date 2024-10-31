@@ -1,0 +1,35 @@
+﻿@page "/Prizes/create"
+
+@inject IRepository repository
+
+@inject NavigationManager navigationManager
+
+@inject SweetAlertService sweetAlertService
+
+<h3>Crear Premio</h3>
+
+<PrizeForm @ref="prizeForm" Prize="prize" OnSubmit="Create" ReturnAction="Return" />
+
+@code {
+    private Prize prize = new();
+    private PrizeForm prizeForm;
+
+    private async Task Create()
+    {
+        var responseHttp = await repository.Post("/api/Prizes", prize);
+
+        if (responseHttp.Error)
+        {
+            var message = await responseHttp.GetErrorMessage();
+            await sweetAlertService.FireAsync("Error", message);
+            return;
+        }
+
+        navigationManager.NavigateTo("/Prizes");
+    }
+
+    private void Return()
+    {
+        navigationManager.NavigateTo("/Prizes");
+    }
+}

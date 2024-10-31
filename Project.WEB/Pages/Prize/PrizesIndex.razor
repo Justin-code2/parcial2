@@ -1,0 +1,57 @@
+﻿@page "/Prizes"
+
+@using Project.Shared.Entities
+
+@using Project.WEB.Repositories
+
+@using Project.WEB.Shared
+
+@inject IRepository repository
+
+<h1>Premios</h1>
+
+<GenericList MyList="Prizes">
+
+    <Body>
+
+        <div class="mb-3">
+            <a class="btn btn-primary " href="/Prizes/Create">Nuevo Premio</a>
+        </div>
+
+        <table class="table table-striped">
+
+            <thead>
+                <tr>
+                    <th>Premio</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var prize in Prizes!)
+                {
+                    <tr>
+                        <td>
+                            @prize. DescripPriz
+                        </td>
+                        <td>
+                            <a class="btn btn-warning">Editar</a>
+                            <button class="btn btn-danger">Borrar</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </Body>
+
+</GenericList>
+
+@code {
+    public List<Prize> Prizes { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        var responseHppt = await repository.Get<List<Prize>>("/api/prizes");
+        Prizes = responseHppt.Response!;
+    }
+}
