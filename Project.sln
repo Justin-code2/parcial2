@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Project.Shared", "Project.S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Project.API", "Project.API\Project.API.csproj", "{3BB5152A-AF43-423B-AD62-F347FFB98BEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project.WEB", "Project.WEB\Project.WEB.csproj", "{655DAB49-1593-4942-B620-A33DB74EA116}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Project.WEB", "Project.WEB\Project.WEB.csproj", "{655DAB49-1593-4942-B620-A33DB74EA116}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

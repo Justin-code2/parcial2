@@ -1,0 +1,81 @@
+﻿@page "/Mentors"
+
+@using Project.Shared.Entities
+
+@using Project.WEB.Repositories
+
+@using Project.WEB.Shared
+
+@inject IRepository repository
+
+<h1>Mentores</h1>
+
+<GenericList MyList="Mentors">
+
+    <Body>
+
+        <div class="mb-3">
+            <a class="btn btn-primary " href="/Mentors/Create">Nuevo Mentor</a>
+        </div>
+
+        <table class="table table-striped">
+
+            <thead>
+
+                <tr>
+
+                    <th>Mentor</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (var mentor in Mentors!)
+
+                {
+
+                    <tr>
+
+                        <td>
+                            @mentor.NameMentor
+                        </td>
+
+                        <td>
+                            @mentor.AreaExp
+                        </td>
+
+                        <td>
+                            <a class="btn btn-warning">Editar</a>
+                            <button class="btn btn-danger">Borrar</button>
+                        </td>
+
+                    </tr>
+
+                }
+
+            </tbody>
+
+        </table>
+
+    </Body>
+
+</GenericList>
+
+@code {
+
+    public List<Mentor> Mentors { get; set; }
+
+    protected async override Task OnInitializedAsync()
+
+    {
+
+        var responseHppt = await repository.Get<List<Mentor>>("/api/mentors");
+
+        Mentors = responseHppt.Response!;
+
+    }
+
+}
+

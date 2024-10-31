@@ -1,0 +1,43 @@
+﻿@using Project.Shared.Entities
+
+@inject SweetAlertService swal
+
+<EditForm Model="Mentor" OnSubmit="OnSubmit">
+
+    <DataAnnotationsValidator />
+
+    <div class="mb-3">
+        <label>Nombre Mentor:</label>
+        <div>
+            <InputText width="10" @bind-Value="Mentor.NameMentor" />
+            <ValidationMessage For="@(() => Mentor.NameMentor)" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label>Fecha fin:</label>
+        <div>
+            <InputText width="10" @bind-Value="Mentor.AreaExp" />
+            <ValidationMessage For="@(() => Mentor.AreaExp)" />
+        </div>
+    </div>
+
+ 
+    <button class="btn btn-primary" type="submit">Guardar</button>
+    <button class="btn btn-success" @onclick="ReturnAction">Regresar</button>
+
+</EditForm>
+
+@code {
+    [EditorRequired]
+    [Parameter]
+    public Mentor Mentor { get; set; }
+
+    [EditorRequired]
+    [Parameter]
+    public EventCallback OnSubmit { get; set; }
+
+    [EditorRequired]
+    [Parameter]
+    public EventCallback ReturnAction { get; set; }
+}
