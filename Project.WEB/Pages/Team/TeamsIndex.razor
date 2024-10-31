@@ -1,0 +1,62 @@
+﻿@page "/Teams"
+
+@using Project.Shared.Entities
+
+@using Project.WEB.Repositories
+
+@using Project.WEB.Shared
+
+@inject IRepository repository
+
+<h1>Equipos</h1>
+
+<GenericList MyList="Teams">
+
+    <Body>
+
+        <div class="mb-3">
+            <a class="btn btn-primary " href="/Teams/Create">Nuevo Equipo</a>
+        </div>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Equipo</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var team in Teams!)
+                {
+                    <tr>
+                        <td>
+                            @team.NameTe
+                        </td>
+                        <td>
+                            @team.NumberMem
+                        </td>
+                        <td>
+                            @team.ExperienceTeam
+                        </td>
+                        <td>
+                            <a class="btn btn-warning">Editar</a>
+                            <button class="btn btn-danger">Borrar</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </Body>
+
+</GenericList>
+
+@code {
+    public List<Team> Teams { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        var responseHppt = await repository.Get<List<Team>>("/api/teams");
+        Teams = responseHppt.Response!;
+    }
+}

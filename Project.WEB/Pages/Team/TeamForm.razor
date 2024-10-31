@@ -1,0 +1,48 @@
+﻿@using Project.Shared.Entities 
+
+@inject SweetAlertService swal
+
+<EditForm Model="Team" OnSubmit="OnSubmit">
+    <DataAnnotationsValidator /> 
+
+    <div class="mb-3"> 
+        <label>Nombre Team:</label>
+        <div> 
+            <InputText width="10" @bind-Value="Team.NameTe" /> 
+            <ValidationMessage For="@(() => Team.NameTe)"/> 
+        </div>
+    </div> 
+
+    <div class="mb-3"> 
+        <label>Numero de miembros:</label> 
+        <div> 
+            <InputText width="10" @bind-Value="Team.NumberMem" /> 
+            <ValidationMessage For="@(() => Team.NumberMem)" /> 
+        </div> 
+    </div>
+
+    <div class="mb-3">
+        <label>Experiencia Team:</label>
+        <div>
+            <InputText width="10" @bind-Value="Team.ExperienceTeam" />
+            <ValidationMessage For="@(() => Team.ExperienceTeam)" />
+        </div>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Guardar</button> 
+    <button class="btn btn-success" onclick="ReturnAction">Regresar</button> 
+</EditForm>  
+
+@code { 
+    [EditorRequired] 
+    [Parameter] 
+    public Team Team { get; set; } 
+
+    [EditorRequired] 
+    [Parameter] 
+    public EventCallback OnSubmit { get; set; } 
+
+    [EditorRequired] 
+    [Parameter] 
+    public EventCallback ReturnAction { get; set; } 
+}
