@@ -1,28 +1,24 @@
 ﻿@page "/Mentors/create"
 
 @inject IRepository repository
-
 @inject NavigationManager navigationManager
-
 @inject SweetAlertService sweetAlertService
 
-<h3>Crear Mentor</h3>
+<h3>Creación de Mentores</h3>
 
-<MentorForm @ref="mentorForm" Mentor="mentor" OnSubmit="Create" ReturnAction="Return" />
+<MentorForm @ref="mentorForm" Mentor="Mentor" OnSubmit="Create" ReturnAction="Return" />
 
-@code {
-
-    private Mentor mentor = new();
-
+@code
+{
+    private Mentor Mentor = new();
     private MentorForm mentorForm;
 
     private async Task Create()
     {
-        var responseHttp = await repository.Post("/api/Mentors", mentor);
-
+        var responseHttp = await repository.PostAsync("/api/Mentors", Mentor);
         if (responseHttp.Error)
         {
-            var message = await responseHttp.GetErrorMessage();
+            var message = await responseHttp.GetErrorMessageAsync();
             await sweetAlertService.FireAsync("Error", message);
             return;
         }

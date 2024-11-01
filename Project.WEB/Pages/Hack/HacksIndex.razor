@@ -1,70 +1,120 @@
 ﻿@page "/Hacks"
 
 @using Project.Shared.Entities
-
 @using Project.WEB.Repositories
-
 @using Project.WEB.Shared
 
 @inject IRepository repository
+@inject NavigationManager navigationManager
+@inject SweetAlertService swal
 
-<h1>Hacks</h1>
+<h1>Página de Hcks</h1>
 
-<GenericList MyList="Hacks">
+@if (Hacks is null)
+{
+    <div class="spinner" />
+}
+else
+{
+    <GenericList MyList="Hacks">
+        <Body>
+            <div class="card">
+                <div class="card-header">
+                    <span>
+                        <i class="oi oi-globe"></i> Hacks
+                        <a class="btn btn-sm btn-primary float-end" href="/Hacks/create"><i class="oi oi-plus"></i> Crear Owner</a>
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="mb-2" style="display: flex; flex-wrap:wrap; align-items: center;">
+                    </div>
+                </div>
+            </div>
 
-    <Body>
-
-        <div class="mb-3">
-            <a class="btn btn-primary " href="/Hacks/Create">New Hack</a>
-        </div>
-
-        <table class="table table-striped">
-
-            <thead>
-                <tr>
-                    <th>Hack</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                @foreach (var hack in Hacks!)
-                {
+            <table class="table table-striped">
+                <thead>
                     <tr>
-                        <td>
-                            @hack.NameHack
-                        </td>
-                        <td>
-                            @hack.DateStart
-                        </td>
-                        <td>
-                            @hack.DateEnd
-                        </td>
-                        <td>
-                            @hack.Topic
-                        </td>
-                        <td>
-                            @hack.Organizer
-                        </td>
-                        <td>
-                            <a class="btn btn-warning">Editar</a>
-
-                            <button class="btn btn-danger">Borrar</button>
-                        </td>
+                        <th>Owner</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var hack in Hacks!)
+                    {
+                        <tr>
+                            <td>
+                                @hack.NameHack
+                            </td>
+                            <td>
+                                @hack.DateStart
+                            </td>
+                            <td>
+                                @hack.DateEnd
+                            </td>
+                            <td>
+                                @hack.Topic
+                            </td>
+                            <td>
+                                @hack.Organizer
+                            </td>
 
-    </Body>
-
-</GenericList>
+                                <a href="/Hacks/edit/@hack.Id" class="btn btn-warning btn-sm"><i class="oi oi-pencil" /> Editar</a>
+                                <button class="btn btn-danger btn-sm" @onclick=@(() => DeleteAsync(hack))><i class="oi oi-trash" /> Borrar</button>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </Body>
+    </GenericList>
+}
 
 @code {
     public List<Hack> Hacks { get; set; }
 
     protected async override Task OnInitializedAsync()
     {
-        var responseHppt = await repository.Get<List<Hack>>("/api/hacks");
+        await Load();
+    }
+
+    private async Task Load()
+    {
+        var responseHppt = await repository.GetAsync<List<Hack>>("/api/Hacks");
         Hacks = responseHppt.Response!;
+    }
+
+    private async Task DeleteAsync(Hack hack)
+    {
+        var result = await swal.FireAsync(new SweetAlertOptions
+            {
+                Title = "Confirmación",
+                Text = "¿Esta seguro que quieres borrar el registro?",
+                Icon = SweetAlertIcon.Question,
+                ShowCancelButton = true
+            });
+
+        var confirm = string.IsNullOrEmpty(result.Value);
+
+        if (confirm)
+        {
+            return;
+        }
+
+        var responseHTTP = await repository.DeleteAsync<Hack>($"api/Hacks/{hack.Id}");
+
+        if (responseHTTP.Error)
+        {
+            if (responseHTTP.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                navigationManager.NavigateTo("/");
+            }
+            else
+            {
+                var mensajeError = await responseHTTP.GetErrorMessageAsync();
+                await swal.FireAsync("Error", mensajeError, SweetAlertIcon.Error);
+            }
+        }
+        else
+        {
+            await Load();
+        }
     }
 }

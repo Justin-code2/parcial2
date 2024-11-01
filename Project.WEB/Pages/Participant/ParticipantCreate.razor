@@ -6,21 +6,20 @@
 
 @inject SweetAlertService sweetAlertService
 
-<h3>Crear Participante</h3>
+<h3>Creación  Participantes</h3>
 
-<ParticipantForm @ref="participantForm" Participant="participant" OnSubmit="Create" ReturnAction="Return" />
+<ParticipantForm @ref="participantForm" Participant="Participant" OnSubmit="Create" ReturnAction="Return" />
 
-@code {
-    private Participant participant = new();
+@code
+{
+    private Participant Participant = new();
     private ParticipantForm participantForm;
-
     private async Task Create()
     {
-        var responseHttp = await repository.Post("/api/participants", participant);
-
+        var responseHttp = await repository.PostAsync("/api/Participants", Participant);
         if (responseHttp.Error)
         {
-            var message = await responseHttp.GetErrorMessage();
+            var message = await responseHttp.GetErrorMessageAsync();
             await sweetAlertService.FireAsync("Error", message);
             return;
         }

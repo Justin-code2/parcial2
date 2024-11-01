@@ -1,35 +1,33 @@
-﻿@page "/Plans/create"
+﻿@page "/Plan/create"
 
 @inject IRepository repository
-
 @inject NavigationManager navigationManager
-
 @inject SweetAlertService sweetAlertService
 
-<h3>Crear Plan</h3>
+<h3>Creación de Planes</h3>
 
-<PlanForm @ref="planForm" Plan="plan" OnSubmit="Create" ReturnAction="Return" />
+<PlanForm @ref="planForm" Plan="Plan" OnSubmit="Create" ReturnAction="Return" />
 
-@code {
-    private Plan plan = new();
+@code
+{
+    private Plan Plan = new();
     private PlanForm planForm;
 
     private async Task Create()
     {
-        var responseHttp = await repository.Post("/api/plans", plan);
-
+        var responseHttp = await repository.PostAsync("/api/Plan", Plan);
         if (responseHttp.Error)
         {
-            var message = await responseHttp.GetErrorMessage();
+            var message = await responseHttp.GetErrorMessageAsync();
             await sweetAlertService.FireAsync("Error", message);
             return;
         }
 
-        navigationManager.NavigateTo("/Plans");
+        navigationManager.NavigateTo("/Plan");
     }
 
     private void Return()
     {
-        navigationManager.NavigateTo("/Plans");
+        navigationManager.NavigateTo("/Plan");
     }
 }

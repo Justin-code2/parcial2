@@ -1,57 +1,109 @@
-﻿@page "/Prizes"
+﻿@page "/Prize"
 
 @using Project.Shared.Entities
-
 @using Project.WEB.Repositories
-
 @using Project.WEB.Shared
 
 @inject IRepository repository
+@inject NavigationManager navigationManager
+@inject SweetAlertService swal
 
-<h1>Premios</h1>
+<h1>Página de premios</h1>
 
-<GenericList MyList="Prizes">
+@if (Prizes is null)
+{
+    <div class="spinner" />
+}
+else
+{
+    <GenericList MyList="Prizes">
+        <Body>
+            <div class="card">
+                <div class="card-header">
+                    <span>
+                        <i class="oi oi-globe"></i> Prizes
+                        <a class="btn btn-sm btn-primary float-end" href="/Prize/create"><i class="oi oi-plus"></i> Crear Owner</a>
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="mb-2" style="display: flex; flex-wrap:wrap; align-items: center;">
+                    </div>
+                </div>
+            </div>
 
-    <Body>
-
-        <div class="mb-3">
-            <a class="btn btn-primary " href="/Prizes/Create">Nuevo Premio</a>
-        </div>
-
-        <table class="table table-striped">
-
-            <thead>
-                <tr>
-                    <th>Premio</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                @foreach (var prize in Prizes!)
-                {
+            <table class="table table-striped">
+                <thead>
                     <tr>
-                        <td>
-                            @prize. DescripPriz
-                        </td>
-                        <td>
-                            <a class="btn btn-warning">Editar</a>
-                            <button class="btn btn-danger">Borrar</button>
-                        </td>
+                        <th>Owner</th>
                     </tr>
-                }
-            </tbody>
-        </table>
-
-    </Body>
-
-</GenericList>
+                </thead>
+                <tbody>
+                    @foreach (var prize in Prizes!)
+                    {
+                        <tr>
+                            <td>
+                                @prize.DescripPriz
+                            </td>
+                            <td>
+                                <a href="/Prize/edit/@prize.Id" class="btn btn-warning btn-sm"><i class="oi oi-pencil" /> Editar</a>
+                                <button class="btn btn-danger btn-sm" @onclick=@(() => DeleteAsync(prize))><i class="oi oi-trash" /> Borrar</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </Body>
+    </GenericList>
+}
 
 @code {
     public List<Prize> Prizes { get; set; }
 
     protected async override Task OnInitializedAsync()
     {
-        var responseHppt = await repository.Get<List<Prize>>("/api/prizes");
+        await Load();
+    }
+
+    private async Task Load()
+    {
+        var responseHppt = await repository.GetAsync<List<Prize>>("/api/Prize");
         Prizes = responseHppt.Response!;
+    }
+
+    private async Task DeleteAsync(Prize prize)
+    {
+        var result = await swal.FireAsync(new SweetAlertOptions
+            {
+                Title = "Confirmación",
+                Text = "¿Está seguro que quiere borrar el registro?",
+                Icon = SweetAlertIcon.Question,
+                ShowCancelButton = true
+            });
+
+        var confirm = string.IsNullOrEmpty(result.Value);
+
+        if (confirm)
+        {
+            return;
+        }
+
+        var responseHTTP = await repository.DeleteAsync<Prize>($"api/Prize/{prize.Id}");
+
+        if (responseHTTP.Error)
+        {
+            if (responseHTTP.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                navigationManager.NavigateTo("/");
+            }
+            else
+            {
+                var mensajeError = await responseHTTP.GetErrorMessageAsync();
+                await swal.FireAsync("Error", mensajeError, SweetAlertIcon.Error);
+            }
+        }
+        else
+        {
+            await Load();
+        }
     }
 }

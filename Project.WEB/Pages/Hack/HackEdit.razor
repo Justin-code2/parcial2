@@ -1,0 +1,67 @@
+﻿@page "/hacks/edit/{id:int}"
+
+@inject NavigationManager navigationManager
+@inject IRepository repository
+@inject SweetAlertService swal
+
+<h3>HackEdit</h3>
+
+@if (Hack is null)
+{
+    <p>Cargando ...</p>
+}
+else
+{
+    <HackForm @ref="HackForm" Hack="Hack" OnSubmit="Edit" ReturnAction="Return" />
+}
+
+@code {
+    private Hack Hack;
+    private HackForm HackForm;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var responseHTTP = await repository.GetAsync<Hack>($"api/hacks/{Id}");
+
+        if (responseHTTP.Error)
+        {
+            if (responseHTTP.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                navigationManager.NavigateTo("hacks");
+            }
+            else
+            {
+                var messageError = await responseHTTP.GetErrorMessageAsync();
+                await swal.FireAsync("Error", messageError, SweetAlertIcon.Error);
+            }
+        }
+        else
+        {
+            Hack = responseHTTP.Response;
+        }
+    }
+
+    private async Task Edit()
+    {
+        var responseHTTP = await repository.PutAsync("api/hacks", Hack);
+
+        if (responseHTTP.Error)
+        {
+            var mensajeError = await responseHTTP.GetErrorMessageAsync();
+            await swal.FireAsync("Error", mensajeError, SweetAlertIcon.Error);
+        }
+        else
+        {
+            HackForm!.FormPostedSuccessfully = true;
+            navigationManager.NavigateTo("hacks");
+        }
+    }
+
+    private void Return()
+    {
+        navigationManager.NavigateTo("hacks");
+    }
+}

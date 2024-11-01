@@ -1,84 +1,142 @@
 ﻿@page "/Participants"
 
+
 @using Project.Shared.Entities
-
 @using Project.WEB.Repositories
-
 @using Project.WEB.Shared
 
+
 @inject IRepository repository
+@inject NavigationManager navigationManager
+@inject SweetAlertService swal
 
-<h1>Participantes</h1>
 
-<GenericList MyList="Participants">
 
-    <Body>
+<h1>Página de participantes</h1>
 
-        <div class="mb-3">
-            <a class="btn btn-primary " href="/Participants/Create">Nuevo Participante</a>
-        </div>
 
-        <table class="table table-striped">
 
-            <thead>
+@if (Participants is null)
+{
+    <div class="spinner" />
+}
+else
+{
 
-                <tr>
 
-                    <th>Participante</th>
 
-                </tr>
+    <GenericList MyList="Participants">
 
-            </thead>
+        <Body>
 
-            <tbody>
+            <div class="card">
 
-                @foreach (var participant in Participants!)
+                <div class="card-header">
+                    <span>
+                        <i class="oi oi-globe"></i> Participants
+                        <a class="btn btn-sm btn-primary float-end" href="/Participants/create"><i class="oi oi-plus"></i> Crear Owner</a>
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="mb-2" style="display: flex; flex-wrap:wrap; align-items: center;">
+                    </div>
+                </div>
+            </div>
 
-                {
-
+            <table class="table table-striped">
+                <thead>
                     <tr>
 
-                        <td>
-                            @participant.NameParti
-                        </td>
-
-                        <td>
-                            @participant.RoleParti
-                        </td>
-
-                        <td>
-                            @participant.ExperienceParti
-                        </td>
-
-                        <td>
-                            <a class="btn btn-warning">Editar</a>
-                            <button class="btn btn-danger">Borrar</button>
-                        </td>
+                        <th>Owner</th>
 
                     </tr>
+                </thead>
+                <tbody>
+                    @foreach (var participant in Participants!)
+                    {
+                        <tr>
 
-                }
+                            <td>
+                                @participant.NameParti
+                            </td>
 
-            </tbody>
+                            <td>
+                                @participant.RoleParti
+                            </td>
 
-        </table>
+                            <td>
+                                @participant.ExperienceParti
+                            </td>
 
-    </Body>
+                            <td>
 
-</GenericList>
+                                <a href="/Participants/edit/@participant.Id" class="btn btn-warning btn-sm"><i class="oi oi-pencil" /> Editar</a>
+                                <button class="btn btn-danger btn-sm" @onclick=@(() => DeleteAsync(participant))><i class="oi oi-trash" /> Borrar</button>
+
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </Body>
+
+    </GenericList>
+}
+
+
+
 
 @code {
 
     public List<Participant> Participants { get; set; }
 
     protected async override Task OnInitializedAsync()
-
     {
-
-        var responseHttp = await repository.Get<List<Participant>>("/api/participants");
-
-        Participants = responseHttp.Response!;
-
+        await Load();
     }
 
+    private async Task Load()
+    {
+        var responseHppt = await repository.GetAsync<List<Participant>>("/api/Participants");
+        Participants = responseHppt.Response!;
+    }
+
+    private async Task DeleteAsync(Participant Participant)
+    {
+        var result = await swal.FireAsync(new SweetAlertOptions
+            {
+                Title = "Confirmación",
+                Text = "¿Esta seguro que quieres borrar el registro?",
+                Icon = SweetAlertIcon.Question,
+                ShowCancelButton = true
+            });
+
+        var confirm = string.IsNullOrEmpty(result.Value);
+
+        if (confirm)
+        {
+            return;
+        }
+
+        var responseHTTP = await repository.DeleteAsync<Participant>($"api/Participants/{Participant.Id}");
+
+        if (responseHTTP.Error)
+        {
+            if (responseHTTP.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                navigationManager.NavigateTo("/");
+            }
+            else
+            {
+                var mensajeError = await responseHTTP.GetErrorMessageAsync();
+                await swal.FireAsync("Error", mensajeError, SweetAlertIcon.Error);
+            }
+        }
+        else
+        {
+            await Load();
+        }
+    }
 }

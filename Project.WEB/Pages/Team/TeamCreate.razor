@@ -1,4 +1,4 @@
-﻿@page "/Teams/create"
+﻿@page "/Team/create"
 
 @inject IRepository repository
 
@@ -6,30 +6,30 @@
 
 @inject SweetAlertService sweetAlertService
 
-<h3>Crear Equipo</h3>
+<h3>Creación de Teams</h3>
 
-<TeamForm @ref="teamForm" Team="team" OnSubmit="Create" ReturnAction="Return" />
+<TeamForm @ref="teamForm" Team="Team" OnSubmit="Create" ReturnAction="Return" />
 
-@code {
-    private Team team = new();
+@code
+{
+    private Team Team = new();
     private TeamForm teamForm;
 
     private async Task Create()
     {
-        var responseHttp = await repository.Post("/api/Teams", team);
-
+        var responseHttp = await repository.PostAsync("/api/Team", Team);
         if (responseHttp.Error)
         {
-            var message = await responseHttp.GetErrorMessage();
+            var message = await responseHttp.GetErrorMessageAsync();
             await sweetAlertService.FireAsync("Error", message);
             return;
         }
 
-        navigationManager.NavigateTo("/Teams");
+        navigationManager.NavigateTo("/Team");
     }
 
     private void Return()
     {
-        navigationManager.NavigateTo("/Teams");
+        navigationManager.NavigateTo("/Team");
     }
 }
